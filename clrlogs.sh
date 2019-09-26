@@ -23,8 +23,7 @@ else
 scp $i $REM_USER@$REM_SERVER:/$DEST_DIR/
 fi
 done
-
-
+echo "Done"
 
 
 
