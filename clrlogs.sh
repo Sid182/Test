@@ -8,11 +8,11 @@
 
 FILE_MASK=$1
 FILE_TYPE=$2
-LOG_DIR=/var/log
-MINS_TO_HOLD=+1
-REM_USER=ubuntu
-REM_SERVER=18.196.139.93
-DEST_DIR=/tmp/backup_logs
+LOG_DIR=$3
+MINS_TO_HOLD=$4
+REM_USER=$5
+REM_SERVER=$6
+DEST_DIR=$7
 
 if ssh $REM_USER@$REM_SERVER "[ ! -d $DEST_DIR ]"; then
 echo "Creating Destination directory"
