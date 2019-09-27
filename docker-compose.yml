@@ -1,0 +1,30 @@
+version: "2"
+services:
+  master:
+    image: eeacms/jenkins-master
+    container_name: jenkins_master
+    restart: always
+    ports:
+    - "80:8080"
+    - "50000:50000"
+    environment:
+    - JAVA_OPTS=-Xmx2048m
+    volumes:
+    - /home/ubuntu/jenkins-master:/var/jenkins_home
+
+  worker:
+    image: eeacms/jenkins-slave
+    container_name: jenkins_slave
+    restart: always
+    environment:
+      JAVA_OPTS: "-Xmx2048m"
+      JENKINS_MASTER: "http://master:8080"
+      JENKINS_NAME: "worker"
+      JENKINS_USER: "sid"
+      JENKINS_PASS: "12345"      
+    volumes:
+    - /home/ubuntu/jenkins-worker:/var/jenkins_home/worker
+
+volumes:
+  jenkins-master:
+  jenkins-worker:

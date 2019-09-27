@@ -1,0 +1,34 @@
+#!groovy
+properties([disableConcurrentBuilds()])
+
+pipeline {
+    agent { 
+        label 'master'
+        }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        timestamps()
+    }
+    stages {
+        stage("create docker image") {
+            steps {
+                echo " ============== start building image =================="
+                dir ('docker/toolbox') {
+                        sh 'docker build -t webserver:latest .'
+                }
+            }
+        }
+	  stage("Remove image if it exists") {
+            steps {
+                echo "==============Checking existing images================"
+                    sh 'docker stop mywebserver || true && docker rm mywebserver || true'
+            }
+        }   
+	stage("start docker container") {
+		steps {
+			echo "==================start docker container================"
+				sh 'docker run -d --name mywebserver -p 8000:80 webserver:latest'
+				}
+			}
+		}
+    }
