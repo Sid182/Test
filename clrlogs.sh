@@ -20,7 +20,7 @@ ssh $REM_USER@$REM_SERVER "mkdir $DEST_DIR"
 fi
 
 echo "======================Moving logs======================"
-for i in $(find $LOG_DIR -name "$FILE_MASK.$FILE_TYPE" -type f -mmin +$MINS_TO_HOLD)
+for i in $(find $LOG_DIR -name "$FILE_MASK.$FILE_TYPE" -type f -mmin $MINS_TO_HOLD)
 do
 echo "Move $i from $LOG_DIR to $REM_SERVER:$DEST_DIR"
 rsync -havz --remove-source-files -e ssh $i $REM_USER@$REM_SERVER:/$DEST_DIR/
