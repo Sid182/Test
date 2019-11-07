@@ -14,7 +14,7 @@ DEBUG="echo "
 DEBUG=""
 REGION=eu-central-1
 
-INSTANCE_STS=`aws ec2 describe-instance-status --region $REGION --instance-ids ${EC2_LIST_ID[@]} | jq -r '.InstanceStatuses[].InstanceState.Name'`
+INSTANCE_STS=`aws ec2 describe-instance-status --region $REGION --instance-ids ${EC2_LIST_ID[@]} --include-all-instances | jq -r '.InstanceStatuses[].InstanceState.Name'`
 
 echo "InstanceStatus : $INSTANCE_STS"
 
