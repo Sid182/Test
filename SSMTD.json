@@ -1,0 +1,1727 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Cloudformation template for deploying task defenition using values from Parameter Store",
+  "Parameters": {
+    "Environment": {
+      "Description": "Specify the environment's name",
+      "Type": "String",
+      "Default": "stage"
+    },
+    "Project": {
+      "Description": "Specify the project name",
+      "Type": "String",
+      "Default": "cmbp"
+    },
+    "Package": {
+      "Description": "Specify the package name",
+      "Type": "String",
+      "Default": "be"
+    },
+    "ECRRepoBE": {
+      "Description": "Specify repository for task defenition",
+      "Type": "String",
+      "Default": "cmbp-stg-be"
+    },
+    "LogGroupBE": {
+      "Description": "Specify log group for task defenition",
+      "Type": "String",
+      "Default": "/ecs/cmbp-stg-be"
+    },
+    "ServerPort": {
+      "Description": "Server Port",
+      "Type": "String",
+      "Default": "3000"
+    },
+    "ServerProxyPrefix": {
+      "Description": "Server Proxy Prefix",
+      "Type": "String",
+      "Default": "\"/api/cmbp-stg\""
+    },
+    "TokenTTL": {
+      "Description": "Token TTL",
+      "Type": "String",
+      "Default": "1800"
+    },
+    "HTTPTimeout": {
+      "Description": "Http timeout",
+      "Type": "String",
+      "Default": "600000"
+    },
+    "OpenIdURL": {
+      "Description": "Oxygen url",
+      "Type": "String",
+      "Default": "\"https://accounts-staging.autodesk.com\""
+    },
+    "OxygenKey": {
+      "Description": "Oxygen key",
+      "Type": "String",
+      "Default": "\"610924a3-1bca-4f4b-98b0-50247af98063\""
+    },
+    "OxygenSecret": {
+      "Description": "Oxygen key",
+      "Type": "String",
+      "Default": "\"15556799-3bc1-4765-add4-3cfd054c8198\""
+    },
+    "ExportProtection": {
+      "Description": "Conf export protection",
+      "Type": "String",
+      "Default": "\"1\""
+    },
+    "ReportsPath": {
+      "Description": "Reports Path",
+      "Type": "String",
+      "Default": "\"LS_Reports\""
+    },
+    "BucketName": {
+      "Description": "Reports Bucket Name",
+      "Type": "String",
+      "Default": "\"cmbp-stage-0696fc60\""
+    },
+    "CreditReport": {
+      "Description": "Credit report max pos in full",
+      "Type": "String",
+      "Default": "20"
+    },
+    "DBReadOnlyHost": {
+      "Description": "DB postgres RO host name",
+      "Type": "String",
+      "Default": "\"cmbpstg2-aws-cluster.cluster-ro-cdybhrxyvdux.us-west-2.rds.amazonaws.com\""
+    },
+    "DBReadOnlyPort": {
+      "Description": "DB postgres RO port",
+      "Type": "String",
+      "Default": "\"5432\""
+    },
+    "DBReadOnlyName": {
+      "Description": "DB postgres RO name",
+      "Type": "String",
+      "Default": "\"cmbpstg2\""
+    },
+    "DBReadOnlyUser": {
+      "Description": "DB postgres RO user",
+      "Type": "String",
+      "Default": "\"cmbpprd\""
+    },
+    "DBReadOnlyTimeout": {
+      "Description": "DB postgres RO statement timeout",
+      "Type": "String",
+      "Default": "300000"
+    },
+    "DBHost": {
+      "Description": "DB postgres host name",
+      "Type": "String",
+      "Default": "\"cmbpstg2-aws-cluster.cluster-cdybhrxyvdux.us-west-2.rds.amazonaws.com\""
+    },
+    "DBPort": {
+      "Description": "DB postgres port",
+      "Type": "String",
+      "Default": "\"5432\""
+    },
+    "DBName": {
+      "Description": "DB postgres name",
+      "Type": "String",
+      "Default": "\"cmbpstg2\""
+    },
+    "DBUser": {
+      "Description": "DB postgres user",
+      "Type": "String",
+      "Default": "\"cmbpprd\""
+    },
+    "DBTimeout": {
+      "Description": "DB postgres statement timeout",
+      "Type": "String",
+      "Default": "300000"
+    },
+    "RedisPort": {
+      "Description": "Redis Port",
+      "Type": "String",
+      "Default": "6379"
+    },
+    "RedisURL": {
+      "Description": "Redis URL",
+      "Type": "String",
+      "Default": "\"stg-elasticache-cluster.ek13xm.0001.usw2.cache.amazonaws.com\""
+    },
+    "SMTPHost": {
+      "Description": "SMTP Host",
+      "Type": "String",
+      "Default": "\"smtp.sendgrid.net\""
+    },
+    "SMTPPort": {
+      "Description": "SMTP Host",
+      "Type": "String",
+      "Default": "587"
+    },
+    "SMTPSecure": {
+      "Description": "SMTP Host",
+      "Type": "String",
+      "Default": "false"
+    },
+    "SMTPUser": {
+      "Description": "SMTP Host",
+      "Type": "String",
+      "Default": "\"LSCMBP_prd\""
+    },
+    "SMTPNoAuth": {
+      "Description": "SMTP No Auth",
+      "Type": "String",
+      "Default": "false"
+    },
+    "SMTPReject": {
+      "Description": "SMTP Reject Unauthorized",
+      "Type": "String",
+      "Default": "false"
+    },
+    "SMTPRequireTLS": {
+      "Description": "SMTP Require TLS",
+      "Type": "String",
+      "Default": "true"
+    },
+    "SMTPIgnoreTLS": {
+      "Description": "SMTP Ignore TLS",
+      "Type": "String",
+      "Default": "false"
+    },
+    "SMTPConnectionTimeout": {
+      "Description": "SMTP Connection timeout",
+      "Type": "String",
+      "Default": "60000"
+    },
+    "MailerFrom": {
+      "Description": "Mailer from",
+      "Type": "String",
+      "Default": "\"ls.cmbp.stg.support@autodesk.com\""
+    },
+    "MailerPublicHost": {
+      "Description": "Mailer from",
+      "Type": "String",
+      "Default": "\"http://cmbp-stg.autodesk.com/app/cmbp-release\""
+    },
+    "MailerVM": {
+      "Description": "Email vm",
+      "Type": "String",
+      "Default": "\"ls.vendor.management@autodesk.com\""
+    },
+    "MailerBM": {
+      "Description": "Email bm",
+      "Type": "String",
+      "Default": "\"ls.bus.mgmt@autodesk.com\""
+    },
+    "MailerPGM": {
+      "Description": "Email Pgm",
+      "Type": "String",
+      "Default": "\"ls.pgm.cmbp.core@autodesk.com\""
+    },
+    "MailerAP": {
+      "Description": "Email Ap",
+      "Type": "String",
+      "Default": "\"ls.vendor.management@autodesk.com\""
+    },
+    "MailerOverride": {
+      "Description": "Email Override",
+      "Type": "String",
+      "Default": "\"\""
+    },
+    "IAMEcsTaskRole": {
+      "Description": "ECS taskRoleArn for BE CMBP task",
+      "Type": "String",
+      "Default": "arn:aws:iam::199154758188:role/cmbpserviceExecutionRole"
+    }
+  },
+  "Resources": {
+    "ServerPortParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": ["", ["/cmbp/", { "Ref": "Environment" }, "/server/port"]]
+        },
+        "Type": "String",
+        "Value": { "Ref": "ServerPort" },
+        "Description": "CMBP  server port",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "ServerProxyPrefixParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/server/proxyPrefix"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "ServerProxyPrefix" },
+        "Description": "CMBP  proxy prefix",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "TokenTTLParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/server/tokenTTL"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "TokenTTL" },
+        "Description": "Token TTL",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "HTTPTimeoutParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/server/httpTimeout"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "HTTPTimeout" },
+        "Description": "Http timeout",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "OpenIdURLParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/server/openidUrl"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "OpenIdURL" },
+        "Description": "Oxygen URL",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "OxygenKeyParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/server/oxygenkey"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "OxygenKey" },
+        "Description": "Oxygen Key",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "OxygenSecretParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/server/oxygensecret"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "OxygenSecret" },
+        "Description": "Oxygen Secret",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "ExportProtectionParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/server/exportprotection"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "ExportProtection" },
+        "Description": "Export Protection",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "ReportsPathParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/reports/reportsPath"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "ReportsPath" },
+        "Description": "Reports Path",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "BucketNameParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/reports/bucketName"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "BucketName" },
+        "Description": "Reports Bucket Name",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "CreditReportParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            [
+              "/cmbp/",
+              { "Ref": "Environment" },
+              "/reports/creditReportMaxPosInFull"
+            ]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "CreditReport" },
+        "Description": "Credit Report Max Pos In Full",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "DBReadOnlyHostParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/database/ro/host"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "DBReadOnlyHost" },
+        "Description": "Postgres RO host name",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "DBReadOnlyPortParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/database/ro/port"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "DBReadOnlyPort" },
+        "Description": "Postgres RO port",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "DBReadOnlyNameParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/database/ro/database"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "DBReadOnlyName" },
+        "Description": "Postgres RO name",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "DBReadOnlyUserParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/database/ro/user"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "DBReadOnlyUser" },
+        "Description": "Postgres RO user",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "DBReadOnlyTimeoutParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            [
+              "/cmbp/",
+              { "Ref": "Environment" },
+              "/database/ro/statementTimeout"
+            ]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "DBReadOnlyTimeout" },
+        "Description": "Postgres RO statement timeout",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "DBHostParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/database/rw/host"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "DBHost" },
+        "Description": "Postgres host name",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "DBPortParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/database/rw/port"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "DBPort" },
+        "Description": "Postgres port",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "DBParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/database/rw/database"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "DBName" },
+        "Description": "Postgres name",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "DBUserParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/database/rw/user"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "DBUser" },
+        "Description": "Postgres user",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "DBTimeoutParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            [
+              "/cmbp/",
+              { "Ref": "Environment" },
+              "/database/rw/statementTimeout"
+            ]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "DBTimeout" },
+        "Description": "Postgres statement timeout",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "RedisPortParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": ["", ["/cmbp/", { "Ref": "Environment" }, "/redis/port"]]
+        },
+        "Type": "String",
+        "Value": { "Ref": "RedisPort" },
+        "Description": "Redis Port",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "RedisURLParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": ["", ["/cmbp/", { "Ref": "Environment" }, "/redis/url"]]
+        },
+        "Type": "String",
+        "Value": { "Ref": "RedisURL" },
+        "Description": "Redis URL",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "SMTPHostParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": ["", ["/cmbp/", { "Ref": "Environment" }, "/smtp/host"]]
+        },
+        "Type": "String",
+        "Value": { "Ref": "SMTPHost" },
+        "Description": "SMTP host",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "SMTPPortParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": ["", ["/cmbp/", { "Ref": "Environment" }, "/smtp/port"]]
+        },
+        "Type": "String",
+        "Value": { "Ref": "SMTPPort" },
+        "Description": "SMTP port",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "SMTPSecureParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": ["", ["/cmbp/", { "Ref": "Environment" }, "/smtp/secure"]]
+        },
+        "Type": "String",
+        "Value": { "Ref": "SMTPSecure" },
+        "Description": "SMTP secure",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "SMTPUserParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": ["", ["/cmbp/", { "Ref": "Environment" }, "/smtp/user"]]
+        },
+        "Type": "String",
+        "Value": { "Ref": "SMTPUser" },
+        "Description": "SMTP user",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "SMTPNoAuthParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": ["", ["/cmbp/", { "Ref": "Environment" }, "/smtp/noAuth"]]
+        },
+        "Type": "String",
+        "Value": { "Ref": "SMTPNoAuth" },
+        "Description": "SMTP no auth",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "SMTPRejectParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/smtp/rejectUnauthorized"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "SMTPReject" },
+        "Description": "SMTP reject unauthorized",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "SMTPRequireTLSParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/smtp/requireTLS"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "SMTPRequireTLS" },
+        "Description": "SMTP require TLS",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "SMTPIgnoreTLSParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/smtp/ignoreTLS"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "SMTPIgnoreTLS" },
+        "Description": "SMTP ignore TLS",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "SMTPConnectionTimeoutParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/smtp/connectionTimeout"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "SMTPConnectionTimeout" },
+        "Description": "SMTP connection timeout",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "MailerFromParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": ["", ["/cmbp/", { "Ref": "Environment" }, "/mailer/from"]]
+        },
+        "Type": "String",
+        "Value": { "Ref": "MailerFrom" },
+        "Description": "Mailer from",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "MailerPublicHostParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/mailer/publicHost"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "MailerPublicHost" },
+        "Description": "Mailer Public Host",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "MailerVMParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/mailer/emailVm"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "MailerVM" },
+        "Description": "Email vm",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "MailerBMParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/mailer/emailBm"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "MailerBM" },
+        "Description": "Email bm",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "MailerPGMParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/mailer/emailPgm"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "MailerPGM" },
+        "Description": "Email Pgm",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "MailerAPParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/mailer/emailAp"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "MailerAP" },
+        "Description": "Email AP",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+    "MailerOverrideParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            ["/cmbp/", { "Ref": "Environment" }, "/mailer/emailOverride"]
+          ]
+        },
+        "Type": "String",
+        "Value": { "Ref": "MailerOverride" },
+        "Description": "Email Override",
+        "Tags": {
+          "Environment": {
+            "Fn::Join": ["-", ["CMBP", { "Ref": "Environment" }]]
+          }
+        }
+      }
+    },
+
+    "TaskDefinitionBE": {
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "Family": {
+          "Ref": "ECRRepoBE"
+        },
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": ["FARGATE"],
+        "Cpu": 2048,
+        "Memory": "8GB",
+        "ExecutionRoleArn": {
+          "Ref": "IAMEcsTaskRole"
+        },
+        "TaskRoleArn": {
+          "Ref": "IAMEcsTaskRole"
+        },
+        "ContainerDefinitions": [
+          {
+            "Name": {
+              "Fn::Join": [
+                "-",
+                [
+                  { "Ref": "Project" },
+                  { "Ref": "Environment" },
+                  { "Ref": "Package" }
+                ]
+              ]
+            },
+            "Image": {
+              "Fn::Join": [
+                ".",
+                [
+                  { "Ref": "AWS::AccountId" },
+                  "dkr.ecr",
+                  { "Ref": "AWS::Region" },
+                  {
+                    "Fn::Join": ["/", ["amazonaws.com", { "Ref": "ECRRepoBE" }]]
+                  }
+                ]
+              ]
+            },
+            "PortMappings": [
+              {
+                "ContainerPort": 3000
+              }
+            ],
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                  "awslogs-region": {
+                      "Ref": "AWS::Region"
+                  },
+                  "awslogs-group": {
+                      "Ref": "LogGroupBE"
+                  },
+                  "awslogs-stream-prefix": "ecs"
+              }
+          },
+
+            "Secrets": [
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/server/port"
+                    ]
+                  ]
+                },
+                "Name": "conf_port"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/server/proxyPrefix"
+                    ]
+                  ]
+                },
+                "Name": "conf_proxyPrefix"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/server/tokenTTL"
+                    ]
+                  ]
+                },
+                "Name": "conf_token_ttl"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/server/httpTimeout"
+                    ]
+                  ]
+                },
+                "Name": "conf_http_timeout"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/server/openidUrl"
+                    ]
+                  ]
+                },
+                "Name": "conf_oxygen_url"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/server/oxygenkey"
+                    ]
+                  ]
+                },
+                "Name": "conf_oxygen_key"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/server/oxygensecret"
+                    ]
+                  ]
+                },
+                "Name": "conf_oxygen_secret"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/server/exportprotection"
+                    ]
+                  ]
+                },
+                "Name": "conf_export_protection_password"
+              },    
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/reports/reportsPath"
+                    ]
+                  ]
+                },
+                "Name": "conf_reportsPath"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/reports/bucketName"
+                    ]
+                  ]
+                },
+                "Name": "conf_reports_bucket_name"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/reports/creditReportMaxPosInFull"
+                    ]
+                  ]
+                },
+                "Name": "conf_np_po_and_credit_report_max_pos_in_full"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/database/ro/host"
+                    ]
+                  ]
+                },
+                "Name": "conf_postgres_readonly_host"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/database/ro/port"
+                    ]
+                  ]
+                },
+                "Name": "conf_postgres_readonly_port"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/database/ro/database"
+                    ]
+                  ]
+                },
+                "Name": "conf_postgres_readonly_database"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/database/ro/user"
+                    ]
+                  ]
+                },
+                "Name": "conf_postgres_readonly_user"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/database/ro/statementTimeout"
+                    ]
+                  ]
+                },
+                "Name": "conf_postgres_readonly_statement_timeout"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/database/rw/host"
+                    ]
+                  ]
+                },
+                "Name": "conf_postgres_host"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/database/rw/port"
+                    ]
+                  ]
+                },
+                "Name": "conf_postgres_port"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/database/rw/database"
+                    ]
+                  ]
+                },
+                "Name": "conf_postgres_database"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/database/rw/user"
+                    ]
+                  ]
+                },
+                "Name": "conf_postgres_user"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/database/rw/statementTimeout"
+                    ]
+                  ]
+                },
+                "Name": "conf_postgres_statement_timeout"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/redis/port"
+                    ]
+                  ]
+                },
+                "Name": "conf_redis_port"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/redis/url"
+                    ]
+                  ]
+                },
+                "Name": "conf_redis_url"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/smtp/host"
+                    ]
+                  ]
+                },
+                "Name": "conf_smtp_host"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/smtp/port"
+                    ]
+                  ]
+                },
+                "Name": "conf_smtp_port"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/smtp/secure"
+                    ]
+                  ]
+                },
+                "Name": "conf_smtp_secure"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/smtp/user"
+                    ]
+                  ]
+                },
+                "Name": "conf_smtp_user"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/smtp/noAuth"
+                    ]
+                  ]
+                },
+                "Name": "conf_smtp_noAuth"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/smtp/rejectUnauthorized"
+                    ]
+                  ]
+                },
+                "Name": "conf_smtp_rejectUnauthorized"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/smtp/requireTLS"
+                    ]
+                  ]
+                },
+                "Name": "conf_smtp_requireTLS"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/smtp/ignoreTLS"
+                    ]
+                  ]
+                },
+                "Name": "conf_smtp_ignoreTLS"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/smtp/connectionTimeout"
+                    ]
+                  ]
+                },
+                "Name": "conf_smtp_connectionTimeout"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/mailer/from"
+                    ]
+                  ]
+                },
+                "Name": "conf_mailer_from"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/mailer/publicHost"
+                    ]
+                  ]
+                },
+                "Name": "conf_mailer_publicHost"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/mailer/emailVm"
+                    ]
+                  ]
+                },
+                "Name": "conf_email_vm"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/mailer/emailBm"
+                    ]
+                  ]
+                },
+                "Name": "conf_email_bm"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/mailer/emailPgm"
+                    ]
+                  ]
+                },
+                "Name": "conf_email_pgm"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/mailer/emailOverride"
+                    ]
+                  ]
+                },
+                "Name": "conf_email_override"
+              },
+              {
+                "ValueFrom": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:",
+                      { "Ref": "AWS::Region" },
+                      ":",
+                      { "Ref": "AWS::AccountId" },
+                      ":parameter",
+                      "/cmbp/",
+                      { "Ref": "Environment" },
+                      "/mailer/emailAp"
+                    ]
+                  ]
+                },
+                "Name": "conf_email_ap"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
